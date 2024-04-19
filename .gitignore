@@ -166,3 +166,4 @@ GitHub.sublime-settings
 !.vscode/extensions.json
 .history
 /ToDo/api/migrations/
+/frontend/

@@ -1,7 +1,9 @@
-from django.urls import path
-from .views import TestAPIView
+from django.urls import path, include, re_path
+import djoser.urls
+import rest_framework.authentication
 
 urlpatterns = [
-    path('', TestAPIView.as_view()),
+    # re_path(r'^auth/', include('djoser.urls')),
+    re_path(r'^auth/', include('djoser.urls.authtoken')),
 
 ]

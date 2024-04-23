@@ -5,5 +5,11 @@ from .models import CustomUser
 class UserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'photo']
 
+    def update(self, instance, validate_data):
+        return super().update(instance, validate_data)
+    
+    
+    def save(self, **kwargs):
+        return super().save(**kwargs)

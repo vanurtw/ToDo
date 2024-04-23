@@ -5,5 +5,7 @@ from .models import CustomUser
 # Register your models here.
 
 @admin.register(CustomUser)
-class CustomUserAdmib(admin.ModelAdmin):
-    fields = ('__all__',)
+class CustomUserAdmin(admin.ModelAdmin):
+    pass
+
+

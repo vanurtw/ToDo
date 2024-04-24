@@ -6,9 +6,12 @@ from rest_framework import serializers
 
 
 class UserSerializer(ModelSerializer):
+    username = serializers.CharField(required=False)
+
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'photo']
+        read_only_fields = ['id']
 
     def update(self, instance, validate_data):
         return super().update(instance, validate_data)

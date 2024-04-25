@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser
+from .models import CustomUser, Task
 
 
 # Register your models here.
@@ -9,3 +9,6 @@ class CustomUserAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    pass

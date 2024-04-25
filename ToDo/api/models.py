@@ -16,11 +16,14 @@ class CustomUser(AbstractUser):
     photo = models.ImageField(upload_to=user_directory_path, blank=True)
 
     def __str__(self):
-        return f'{self.id}_{self.username}'
+        return f'{self.username}'
 
 
 class Task(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(),
+                             on_delete=models.CASCADE,
+                             related_name='user_tasks',
+                             blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     data_create = models.DateTimeField(auto_now_add=True)

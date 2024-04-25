@@ -1,5 +1,5 @@
 from rest_framework.generics import GenericAPIView
-from .serializers import UserSerializer, UserResetPasswordSerializer
+from .serializers import UserSerializer, UserResetPasswordSerializer, TaskSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
@@ -40,3 +40,15 @@ class UserResetPasswordAPIView(GenericAPIView):
         return Response({'detail': 'Пароль не совпадает с текущим'})
 
 
+class TaskAPIView(GenericAPIView):
+    def get(self, request):
+        data = request.user.user_tasks.all()
+        serializer = TaskSerializer(data, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        data = request.data
+        serializer = TaskSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data)

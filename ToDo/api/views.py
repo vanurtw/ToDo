@@ -38,3 +38,5 @@ class UserResetPasswordAPIView(GenericAPIView):
             user.save()
             return Response({'detail': 'Пароль изменен'})
         return Response({'detail': 'Пароль не совпадает с текущим'})
+
+

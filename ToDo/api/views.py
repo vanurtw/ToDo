@@ -1,8 +1,9 @@
 from rest_framework.generics import GenericAPIView
-from .serializers import UserSerializer, UserResetPasswordSerializer, TaskSerializer
+from .serializers import UserSerializer, UserResetPasswordSerializer, TaskSerializer, UserCreateSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
+from datetime import datetime
 from rest_framework import viewsets
 from rest_framework.views import APIView
 
@@ -42,6 +43,9 @@ class UserResetPasswordAPIView(GenericAPIView):
 
 class TaskAPIView(GenericAPIView):
     def get(self, request):
+        data_get = request.GET.get('data')
+        data = datetime.isoformat(data_get)
+        print(data)
         data = request.user.user_tasks.all()
         serializer = TaskSerializer(data, many=True)
         return Response(serializer.data)
@@ -52,3 +56,12 @@ class TaskAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(user=request.user)
         return Response(serializer.data)
+
+
+class UserRegisterAPIView(GenericAPIView):
+    def post(self, request):
+        data = request.data
+        serializer = UserCreateSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)

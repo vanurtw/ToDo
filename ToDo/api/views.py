@@ -38,7 +38,7 @@ class UserResetPasswordAPIView(GenericAPIView):
             user.set_password(data.get('new_password'))
             user.save()
             return Response({'detail': 'Пароль изменен'})
-        return Response({'detail': 'Пароль не совпадает с текущим'})
+        return Response({'detail': 'Пароль не совпадает с текущим'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TaskAPIView(GenericAPIView):

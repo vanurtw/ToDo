@@ -43,10 +43,13 @@ class UserResetPasswordAPIView(GenericAPIView):
 
 class TaskAPIView(GenericAPIView):
     def get(self, request):
-        data_get = request.GET.get('data')
-        data = datetime.isoformat(data_get)
-        print(data)
-        data = request.user.user_tasks.all()
+        date_get = request.GET.get('date')
+        if date_get:
+            # date = datetime.isoformat(date_get)
+            date = datetime.strptime(date_get, '%Y/%m/%d')
+            data = request.user.user_tasks.filter(data_completed=date)
+        else:
+            data = request.user.user_tasks.all()
         serializer = TaskSerializer(data, many=True)
         return Response(serializer.data)
 

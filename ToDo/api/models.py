@@ -29,7 +29,7 @@ class Task(models.Model):
     description = models.TextField(verbose_name='описание')
     data_create = models.DateTimeField(auto_now_add=True, verbose_name='дата создания')
     color_code = models.CharField(max_length=255, verbose_name='цвет')
-    data_completed = models.DateTimeField(verbose_name='указанная дата')
+    data_completed = models.DateField(verbose_name='указанная дата')
 
     def __str__(self):
         return self.title

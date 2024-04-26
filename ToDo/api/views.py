@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from datetime import datetime
+from .models import Task
 from rest_framework import viewsets
 from rest_framework.views import APIView
 
@@ -45,20 +46,30 @@ class TaskAPIView(GenericAPIView):
     def get(self, request):
         date_get = request.GET.get('date')
         if date_get:
-            # date = datetime.isoformat(date_get)
             date = datetime.strptime(date_get, '%Y/%m/%d')
             data = request.user.user_tasks.filter(data_completed=date)
         else:
             data = request.user.user_tasks.all()
         serializer = TaskSerializer(data, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         data = request.data
         serializer = TaskSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=request.user)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TaskDetailAPIView(GenericAPIView):
+    def patch(self, request, id):
+        data = request.data
+        task = Task.objects.get(id=id)
+        serializer = TaskSerializer(data=data, instance=task, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserRegisterAPIView(GenericAPIView):

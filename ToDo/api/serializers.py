@@ -47,8 +47,9 @@ class TaskSerializer(ModelSerializer):
 class UserCreateSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'first_name', 'last_name', 'photo', 'password']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'photo', 'password']
         extra_kwargs = {'password': {'write_only': True, 'min_length': 8}}
+        read_only_fields = ['id']
 
     def validate_password(self, data):
         validate_password(data)

@@ -1,4 +1,4 @@
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, get_object_or_404
 from .serializers import UserSerializer, UserResetPasswordSerializer, TaskSerializer, UserCreateSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -70,6 +70,13 @@ class TaskDetailAPIView(GenericAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        task = get_object_or_404(Task, id=id)
+        if task.user != request.user:
+            return Response({'detail', 'неверный id'}, status=status.HTTP_400_BAD_REQUEST)
+        task.delete()
+        return Response({'detail': 'задача удалена'}, status=status.HTTP_200_OK)
 
 
 class UserRegisterAPIView(GenericAPIView):

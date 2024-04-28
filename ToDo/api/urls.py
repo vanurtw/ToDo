@@ -1,5 +1,4 @@
 from django.urls import path, include, re_path
-import djoser.urls
 import rest_framework.authentication
 from .views import UsersAPIView, UserResetPasswordAPIView, TaskAPIView, UserRegisterAPIView, TaskDetailAPIView
 

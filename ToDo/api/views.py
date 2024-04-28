@@ -6,7 +6,6 @@ from rest_framework import permissions
 from datetime import datetime
 from .models import Task
 from rest_framework import viewsets
-from rest_framework.views import APIView
 
 
 # Create your views here

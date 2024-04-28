@@ -25,6 +25,17 @@ class UserTest(TestCase):
         self.assertEqual(user_model.objects.count(), 1)
 
     def test_user_serializer(self):
+        user_model = get_user_model()
+        user = user_model.objects.create(username='test',
+                                         email='test@test.ru',
+                                         password='awdawdawWdwas',
+                                         first_name='test',
+                                         last_name='test')
         data = {
-
+            'id': user.id,
+            'username': 'test',
+            'email': 'test@test.ru',
+            'first_name': 'test',
+            'last_name': 'test'
         }
+        # serializer =

@@ -5,22 +5,6 @@ from rest_framework.validators import ValidationError
 from rest_framework import serializers
 
 
-class UserSerializer(ModelSerializer):
-    username = serializers.CharField(required=False)
-    email = serializers.CharField(required=False)
-
-    class Meta:
-        model = CustomUser
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'photo']
-        read_only_fields = ['id']
-
-    def update(self, instance, validate_data):
-        return super().update(instance, validate_data)
-
-    def save(self, **kwargs):
-        return super().save(**kwargs)
-
-
 class UserResetPasswordSerializer(Serializer):
     current_password = serializers.CharField()
     new_password = serializers.CharField()
@@ -47,7 +31,7 @@ class TaskSerializer(ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class UserCreateSerializer(ModelSerializer):
+class UserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'email', 'password']

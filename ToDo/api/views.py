@@ -1,5 +1,5 @@
 from rest_framework.generics import GenericAPIView, get_object_or_404
-from .serializers import UserSerializer, UserResetPasswordSerializer, TaskSerializer, UserCreateSerializer
+from .serializers import UserSerializer, UserResetPasswordSerializer, TaskSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
@@ -19,6 +19,14 @@ class UsersAPIView(GenericAPIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        data = request.data
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
+            token = Token.objects.create(user=user)
+            return Response({'auth_token': token.key}, status=status.HTTP_201_CREATED)
 
     def patch(self, request):
         serializer = UserSerializer(data=request.data, instance=request.user)
@@ -65,6 +73,7 @@ class TaskAPIView(GenericAPIView):
 
 class TaskDetailAPIView(GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
+
     def patch(self, request, id):
         data = request.data
         task = Task.objects.get(id=id)
@@ -82,11 +91,3 @@ class TaskDetailAPIView(GenericAPIView):
         return Response({'detail': 'задача удалена'}, status=status.HTTP_200_OK)
 
 
-class UserRegisterAPIView(GenericAPIView):
-    def post(self, request):
-        data = request.data
-        serializer = UserCreateSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
-            token = Token.objects.create(user=user)
-            return Response({'auth_token': token.key}, status=status.HTTP_201_CREATED)

@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework import permissions
 from datetime import datetime
 from .models import Task
+from rest_framework.authtoken.models import Token
 from rest_framework import viewsets
 
 
@@ -42,6 +43,8 @@ class UserResetPasswordAPIView(GenericAPIView):
 
 
 class TaskAPIView(GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request):
         date_get = request.GET.get('date')
         if date_get:
@@ -83,5 +86,6 @@ class UserRegisterAPIView(GenericAPIView):
         data = request.data
         serializer = UserCreateSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            token = Token.objects.create(user=user)
+            return Response({'auth_token': token.key}, status=status.HTTP_201_CREATED)

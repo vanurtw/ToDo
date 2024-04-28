@@ -3,7 +3,7 @@ import rest_framework.authentication
 from .views import UsersAPIView, UserResetPasswordAPIView, TaskAPIView, UserRegisterAPIView, TaskDetailAPIView
 
 urlpatterns = [
-    path('users/register/', UserRegisterAPIView.as_view()),
+    path('users/register/', UserRegisterAPIView.as_view(), name='register'),
     path('users/me/', UsersAPIView.as_view()),
     path('users/me/reset-password/', UserResetPasswordAPIView.as_view()),
     path('tasks/', TaskAPIView.as_view()),

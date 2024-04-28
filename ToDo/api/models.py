@@ -12,11 +12,13 @@ def user_directory_path(instance, filename):
 
 
 class CustomUser(AbstractUser):
+    username = models.CharField(max_length=255, blank=True, null=True, unique=False)
     email = models.EmailField(unique=True)
     photo = models.ImageField(upload_to=user_directory_path, blank=True, verbose_name='фото')
-
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('username',)
     def __str__(self):
-        return f'{self.username}'
+        return f'{self.email}'
 
 
 class Task(models.Model):

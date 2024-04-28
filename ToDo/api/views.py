@@ -64,6 +64,7 @@ class TaskAPIView(GenericAPIView):
 
 
 class TaskDetailAPIView(GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
     def patch(self, request, id):
         data = request.data
         task = Task.objects.get(id=id)

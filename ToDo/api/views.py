@@ -27,7 +27,7 @@ class UsersAPIView(GenericAPIView):
             return Response({'auth_token': token.key}, status=status.HTTP_201_CREATED)
 
     def patch(self, request):
-        serializer = UserSerializer(data=request.data, instance=request.user)
+        serializer = UserSerializer(data=request.data, instance=request.user, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

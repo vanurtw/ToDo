@@ -14,7 +14,6 @@ from rest_framework import viewsets
 
 class UsersAPIView(GenericAPIView):
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         serializer = UserSerializer(request.user)
@@ -33,6 +32,11 @@ class UsersAPIView(GenericAPIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    def get_permissions(self, *args, **kwargs):
+        if self.request.stream.method == 'POST':
+            return (permissions.AllowAny(),)
+        return (permissions.IsAuthenticated(),)
 
 
 class UserResetPasswordAPIView(GenericAPIView):
@@ -89,5 +93,3 @@ class TaskDetailAPIView(GenericAPIView):
             return Response({'detail', 'неверный id'}, status=status.HTTP_400_BAD_REQUEST)
         task.delete()
         return Response({'detail': 'задача удалена'}, status=status.HTTP_200_OK)
-
-

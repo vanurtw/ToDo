@@ -1,6 +1,14 @@
 from django.urls import path, include, re_path
 import rest_framework.authentication
+from rest_framework.routers import SimpleRouter
 from .views import UsersAPIView, UserResetPasswordAPIView, TaskAPIView, TaskDetailAPIView
+
+
+
+
+
+
+
 
 urlpatterns = [
     path('users/', UsersAPIView.as_view()),

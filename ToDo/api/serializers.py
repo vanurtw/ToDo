@@ -5,22 +5,6 @@ from rest_framework.validators import ValidationError
 from rest_framework import serializers
 
 
-class UserSerializer(ModelSerializer):
-    username = serializers.CharField(required=False)
-    email = serializers.CharField(required=False)
-
-    class Meta:
-        model = CustomUser
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'photo']
-        read_only_fields = ['id']
-
-    def update(self, instance, validate_data):
-        return super().update(instance, validate_data)
-
-    def save(self, **kwargs):
-        return super().save(**kwargs)
-
-
 class UserResetPasswordSerializer(Serializer):
     current_password = serializers.CharField()
     new_password = serializers.CharField()
@@ -38,7 +22,9 @@ class UserResetPasswordSerializer(Serializer):
 
 
 class TaskSerializer(ModelSerializer):
-    class Meta:
+    # data_completed = serializers.DateTimeField(format = '%Y-%m-%d')
+    data_create = serializers.DateTimeField(format = '%Y-%m-%d', required=False)
+    class Meta: 
         model = Task
         fields = ['id', 'user', 'title', 'description', 'data_create', 'color_code', 'data_completed']
         read_only_fields = ['id', 'data_create', 'user']
@@ -47,10 +33,10 @@ class TaskSerializer(ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class UserCreateSerializer(ModelSerializer):
+class UserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'photo', 'password']
+        fields = ['id', 'email', 'password']
         extra_kwargs = {'password': {'write_only': True, 'min_length': 8}}
         read_only_fields = ['id']
 

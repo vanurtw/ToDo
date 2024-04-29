@@ -1,12 +1,11 @@
-from rest_framework.generics import GenericAPIView
-from .serializers import UserSerializer, UserResetPasswordSerializer, TaskSerializer, UserCreateSerializer
+from rest_framework.generics import GenericAPIView, get_object_or_404
+from .serializers import UserSerializer, UserResetPasswordSerializer, TaskSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from datetime import datetime
 from .models import Task
-from rest_framework import viewsets
-from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
 
 
 # Create your views here
@@ -14,17 +13,29 @@ from rest_framework.views import APIView
 
 class UsersAPIView(GenericAPIView):
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def post(self, request):
+        data = request.data
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
+            token = Token.objects.create(user=user)
+            return Response({'auth_token': token.key}, status=status.HTTP_201_CREATED)
+
     def patch(self, request):
-        serializer = UserSerializer(data=request.data, instance=request.user)
+        serializer = UserSerializer(data=request.data, instance=request.user, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return (permissions.AllowAny(),)
+        return (permissions.IsAuthenticated(),)
 
 
 class UserResetPasswordAPIView(GenericAPIView):
@@ -43,13 +54,18 @@ class UserResetPasswordAPIView(GenericAPIView):
 
 
 class TaskAPIView(GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request):
+        print(1)
         date_get = request.GET.get('date')
         if date_get:
             date = datetime.strptime(date_get, '%Y/%m/%d')
             data = request.user.user_tasks.filter(data_completed=date)
         else:
             data = request.user.user_tasks.all()
+        print(data[0].data_completed)
+        
         serializer = TaskSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -61,7 +77,10 @@ class TaskAPIView(GenericAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+
 class TaskDetailAPIView(GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def patch(self, request, id):
         data = request.data
         task = Task.objects.get(id=id)
@@ -76,7 +95,6 @@ class UserRegisterAPIView(GenericAPIView):
     def post(self, request):
         data = request.data
         serializer = UserCreateSerializer(data=data)
-        print(data)
         if serializer.is_valid(raise_exception=True):
             print(2)
             serializer.save()

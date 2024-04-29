@@ -11,7 +11,7 @@ from .views import UsersAPIView, UserResetPasswordAPIView, TaskAPIView, TaskDeta
 
 
 urlpatterns = [
-    path('users/', UsersAPIView.as_view()),
+    path('users/', UsersAPIView.as_view(), name='users'),
     path('users/reset-password/', UserResetPasswordAPIView.as_view()),
     path('tasks/', TaskAPIView.as_view()),
     path('tasks/<int:id>/', TaskDetailAPIView.as_view()),

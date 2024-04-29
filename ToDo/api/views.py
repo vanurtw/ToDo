@@ -6,7 +6,6 @@ from rest_framework import permissions
 from datetime import datetime
 from .models import Task
 from rest_framework.authtoken.models import Token
-from rest_framework import viewsets
 
 
 # Create your views here
@@ -33,8 +32,8 @@ class UsersAPIView(GenericAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def get_permissions(self, *args, **kwargs):
-        if self.request.stream.method == 'POST':
+    def get_permissions(self):
+        if self.request.method == 'POST':
             return (permissions.AllowAny(),)
         return (permissions.IsAuthenticated(),)
 

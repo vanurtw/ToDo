@@ -64,15 +64,19 @@ class TaskAPIView(GenericAPIView):
             data = request.user.user_tasks.filter(data_completed=date)
         else:
             data = request.user.user_tasks.all()
+<<<<<<< HEAD
         print(data[0].data_completed)
         
+=======
+        print(data)
+>>>>>>> 016a88d2b1a748e345b6fd6c9276f747fe17421f
         serializer = TaskSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         data = request.data
         serializer = TaskSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid()
         serializer.save(user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

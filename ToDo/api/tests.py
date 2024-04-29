@@ -74,18 +74,21 @@ class UserTest(TestCase):
     #     response = self.client.patch(url, data={'email': new_email})
     #     self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
     #     self.assertEqual(self.user.email, new_email)
+    #
+    # def test_register_error(self):
+    #     self.client.logout()
+    #     url = reverse('users')
+    #     data = {'email': 'test@test.ru', 'password': 'awdsadawdawdaw'}
+    #     response = self.client.post(url, data=data)
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     data = {'email': 'user@user.ru', }
+    #     response = self.client.post(url, data=data)
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     data = {'email': 'test@test.ru', 'password': 'test'}
+    #     response = self.client.post(url, data=data)
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     users = get_user_model().objects.all()
+    #     self.assertEqual(users.count(), 1)
 
-    def test_register_error(self):
-        self.client.logout()
-        url = reverse('users')
-        data = {'email': 'test@test.ru', 'password': 'awdsadawdawdaw'}
-        response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        data = {'email': 'user@user.ru', }
-        response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        data = {'email': 'test@test.ru', 'password': 'test'}
-        response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        users = get_user_model().objects.all()
-        self.assertEqual(users.count(), 1)
+
+

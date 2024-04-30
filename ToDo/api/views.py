@@ -57,27 +57,30 @@ class TaskAPIView(GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        print(1)
         date_get = request.GET.get('date')
         if date_get:
             date = datetime.strptime(date_get, '%Y/%m/%d')
             data = request.user.user_tasks.filter(data_completed=date)
         else:
             data = request.user.user_tasks.all()
-        print(data)
         serializer = TaskSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         data = request.data
         serializer = TaskSerializer(data=data)
-        serializer.is_valid()
+        serializer.is_valid(raise_exception=True)
         serializer.save(user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class TaskDetailAPIView(GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, id):
+        task = Task.objects.get(id=id)
+        serializer = TaskSerializer(task)
+        return Response(serializer.data)
 
     def patch(self, request, id):
         data = request.data
@@ -89,6 +92,7 @@ class TaskDetailAPIView(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
+        print('awdwadwawadwdaawdwdawadwda')
         task = get_object_or_404(Task, id=id)
         if task.user != request.user:
             return Response({'detail': 'Это не ваша задача'}, status=status.HTTP_403_FORBIDDEN)

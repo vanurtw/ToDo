@@ -67,6 +67,7 @@ class TaskAPIView(GenericAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
+        # tag
         data = request.data
         serializer = TaskSerializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -79,6 +80,8 @@ class TaskDetailAPIView(GenericAPIView):
 
     def get(self, request, id):
         task = Task.objects.get(id=id)
+        if task.user != request.user:
+            return Response({'detail': 'Это не твоя задача'})
         serializer = TaskSerializer(task)
         return Response(serializer.data)
 

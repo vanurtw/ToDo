@@ -26,7 +26,7 @@ class TaskSerializer(ModelSerializer):
     data_create = serializers.DateTimeField(format = '%Y-%m-%d', required=False)
     class Meta: 
         model = Task
-        fields = ['id', 'user', 'title', 'description', 'data_create', 'color_code', 'data_completed']
+        fields = ['id', 'user', 'title', 'description', 'data_create', 'color_code', 'data_completed', 'completed', 'tag']
         read_only_fields = ['id', 'data_create', 'user']
 
     def update(self, instance, validated_data):

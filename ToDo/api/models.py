@@ -32,6 +32,8 @@ class Task(models.Model):
     data_create = models.DateTimeField(auto_now_add=True, verbose_name='дата создания')
     color_code = models.CharField(max_length=255, verbose_name='цвет')
     data_completed = models.DateField(verbose_name='указанная дата', )
+    completed = models.BooleanField(default=False, verbose_name='статус')
+    tag = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return self.title

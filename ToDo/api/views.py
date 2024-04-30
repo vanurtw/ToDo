@@ -57,6 +57,7 @@ class TaskAPIView(GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
+        print(1)
         date_get = request.GET.get('date')
         if date_get:
             date = datetime.strptime(date_get, '%Y/%m/%d')
@@ -80,7 +81,7 @@ class TaskDetailAPIView(GenericAPIView):
 
     def patch(self, request, id):
         data = request.data
-        task = Task.objects.get(id=id)
+        task = get_object_or_404(Task, id=id)
         serializer = TaskSerializer(data=data, instance=task, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -90,6 +91,16 @@ class TaskDetailAPIView(GenericAPIView):
     def delete(self, request, id):
         task = get_object_or_404(Task, id=id)
         if task.user != request.user:
-            return Response({'detail', 'неверный id'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Это не ваша задача'}, status=status.HTTP_403_FORBIDDEN)
         task.delete()
         return Response({'detail': 'задача удалена'}, status=status.HTTP_200_OK)
+
+
+class UserRegisterAPIView(GenericAPIView):
+    def post(self, request):
+        data = request.data
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid(raise_exception=True):
+            print(2)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)

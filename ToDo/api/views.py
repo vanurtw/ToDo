@@ -75,18 +75,24 @@ class TaskAPIView(GenericAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-
 class TaskDetailAPIView(GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def patch(self, request, id):
         data = request.data
-        task = Task.objects.get(id=id)
+        task = get_object_or_404(Task, id=id)
         serializer = TaskSerializer(data=data, instance=task, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        task = get_object_or_404(Task, id=id)
+        if task.user != request.user:
+            return Response({'detail': 'Это не ваша задача'}, status=status.HTTP_403_FORBIDDEN)
+        task.delete()
+        return Response({'detail': 'задача удалена'}, status=status.HTTP_200_OK)
 
 
 class UserRegisterAPIView(GenericAPIView):

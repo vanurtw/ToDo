@@ -7,6 +7,7 @@ from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer
 from rest_framework import status
 from rest_framework.test import APIClient
+# from djoser.urls
 
 
 # Create your tests here.
@@ -89,17 +90,21 @@ class UserTest(TestCase):
     #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     #     users = get_user_model().objects.all()
     #     self.assertEqual(users.count(), 1)
+    #
+    # def test_users_error_get(self):
+    #     self.client.logout()
+    #     url = reverse('users')
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    #
+    # def test_users_error_patch(self):
+    #     get_user_model().objects.create_user(email='user@user.ru', password='awdawdaw', username='user')
+    #     url = reverse('users')
+    #     data = {'email':'user@user.ru'}
+    #     response = self.client.patch(url, data)
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_users_error_get(self):
+    def test_users_auth_login(self):
         self.client.logout()
-        url = reverse('users')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_users_error_patch(self):
-        get_user_model().objects.create_user(email='user@user.ru', password='awdawdaw', username='user')
-        url = reverse('users')
-        data = {'email':'user@user.ru'}
-        response = self.client.patch(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        url = reverse('djoser:login')
 

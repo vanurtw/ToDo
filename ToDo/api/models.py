@@ -17,6 +17,7 @@ class CustomUser(AbstractUser):
     photo = models.ImageField(upload_to=user_directory_path, blank=True, verbose_name='фото')
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
+
     def __str__(self):
         return f'{self.email}'
 

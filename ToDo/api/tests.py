@@ -148,8 +148,33 @@ from rest_framework.test import APIClient
 #         self.assertEqual(tokens.count(), 0)
 
 
+class TaskTest(TestCase):
+    def setUp(self) -> None:
+        user_model = get_user_model()
+        user = user_model.objects.create_user(username='user', email='user@user.ru', password='awdawdwadwarb')
+        token = Token.objects.create(user=user)
+        self.user = user
+        self.token = token
+        task = Task.objects.create(title='test',
+                                   description='test',
+                                   color_code='test',
+                                   data_completed='1990-03-27',
+                                   tag='test', user=self.user)
+        self.client = APIClient()
+        self.client.force_authenticate(self.user)
 
-# class TaskTest(TestCase):
-#     def setUp(self) -> None:
+    def test_tasks_get(self):
+        url = reverse('tasks')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        url = reverse('tasks')+'?date=1990/03/27'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        url = reverse('tasks') + '?date=2000/06/21'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
 
 

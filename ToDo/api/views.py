@@ -59,7 +59,11 @@ class TaskAPIView(GenericAPIView):
     def get(self, request):
         date_get = request.GET.get('date')
         if date_get:
-            date = datetime.strptime(date_get, '%Y/%m/%d')
+            try:
+                date = datetime.strptime(date_get, '%Y/%m/%d')
+            except:
+                return Response({'detail': 'Неверная дата'}, status=status.HTTP_400_BAD_REQUEST)
+
             data = request.user.user_tasks.filter(data_completed=date)
         else:
             data = request.user.user_tasks.all()

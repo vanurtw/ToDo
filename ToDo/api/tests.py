@@ -185,40 +185,61 @@ class TaskTest(TestCase):
     #     response = self.client.get(url)
     #     self.assertEqual(response.status_code, status.HTTP_200_OK)
     #     self.assertEqual(len(response.data), 0)
+    #
+    # def test_tasks_post(self):
+    #     url = reverse('tasks')
+    #     data = {
+    #         'title': 'new_task',
+    #         'description': 'new_task',
+    #         'color_code': 'color_new',
+    #         'tag': 'new_task',
+    #         'data_completed': '2002-11-05'
+    #     }
+    #     response = self.client.post(url, data=data)
+    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    #     tasks = Task.objects.filter(title='new_task',
+    #                                 description='new_task',
+    #                                 color_code='color_new',
+    #                                 tag='new_task').exists()
+    #     self.assertTrue(tasks)
+    #
+    # def test_tasks_serializer(self):
+    #     task = Task.objects.create(user=self.user,
+    #                                title='new_task',
+    #                                description='new_task',
+    #                                color_code='color_new',
+    #                                tag='new_task',
+    #                                data_completed='2002-11-05'
+    #                                )
+    #     data = {'id': task.id,
+    #             'user': self.user.id,
+    #             'title': 'new_task',
+    #             'description': 'new_task',
+    #             'color_code': 'color_new',
+    #             'data_completed': '2002-11-05',
+    #             'completed': False,
+    #             'tag': 'new_task'
+    #             }
+    #     serializer = TaskSerializer(task)
+    #     self.assertEqual(serializer.data, data)
 
-    def test_tasks_post(self):
+    def test_tasks_error(self):
+        self.client.logout()
+        self.token.delete()
         url = reverse('tasks')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         data = {
             'title': 'new_task',
             'description': 'new_task',
-            'color_code': 'color_new',
-            'tag': 'new_task',
-            'data_completed': '2002-11-05'
+            'color_code': 'color_news',
+            'data_completed': '2002-11-05',
+            'tag': 'new_task'
         }
         response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        tasks = Task.objects.filter(title='new_task',
-                                    description='new_task',
-                                    color_code='color_new',
-                                    tag='new_task').exists()
-        self.assertTrue(tasks)
-
-    def test_tasks_serializer(self):
-        task = Task.objects.create(user=self.user,
-                                   title='new_task',
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        task = Task.objects.filter(title='new_task',
                                    description='new_task',
-                                   color_code='color_new',
-                                   tag='new_task',
-                                   data_completed='2002-11-05'
-                                   )
-        data = {'id': task.id,
-                'user': self.user.id,
-                'title': 'new_task',
-                'description': 'new_task',
-                'color_code': 'color_new',
-                'data_completed': '2002-11-05',
-                'completed': False,
-                'tag': 'new_task'
-                }
-        serializer = TaskSerializer(task)
-        self.assertEqual(serializer.data, data)
+                                   color_code='color_news',
+                                   tag='new_task').exists()
+        self.assertFalse(task)

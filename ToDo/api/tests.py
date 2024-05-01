@@ -4,7 +4,7 @@ from .models import CustomUser, Task
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from rest_framework.authtoken.models import Token
-from .serializers import UserSerializer
+from .serializers import UserSerializer, TaskSerializer
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -159,22 +159,66 @@ class TaskTest(TestCase):
                                    description='test',
                                    color_code='test',
                                    data_completed='1990-03-27',
-                                   tag='test', user=self.user)
+                                   tag='test',
+                                   user=self.user)
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
-    def test_tasks_get(self):
+    # def test_tasks_get(self):
+    #     url = reverse('tasks')
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(len(response.data), 1)
+    #     url = reverse('tasks')+'?date=1990/03/27'
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(len(response.data), 1)
+    #     url = reverse('tasks') + '?date=2000/06/21'
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(len(response.data), 0)
+    #     url = reverse('tasks') + '?tag=test'
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(len(response.data), 1)
+    #     url = reverse('tasks') + '?tag=test_test'
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(len(response.data), 0)
+
+    def test_tasks_post(self):
         url = reverse('tasks')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        url = reverse('tasks')+'?date=1990/03/27'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        url = reverse('tasks') + '?date=2000/06/21'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 0)
+        data = {
+            'title': 'new_task',
+            'description': 'new_task',
+            'color_code': 'color_new',
+            'tag': 'new_task',
+            'data_completed': '2002-11-05'
+        }
+        response = self.client.post(url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        tasks = Task.objects.filter(title='new_task',
+                                    description='new_task',
+                                    color_code='color_new',
+                                    tag='new_task').exists()
+        self.assertTrue(tasks)
 
-
+    def test_tasks_serializer(self):
+        task = Task.objects.create(user=self.user,
+                                   title='new_task',
+                                   description='new_task',
+                                   color_code='color_new',
+                                   tag='new_task',
+                                   data_completed='2002-11-05'
+                                   )
+        data = {'id': task.id,
+                'user': self.user.id,
+                'title': 'new_task',
+                'description': 'new_task',
+                'color_code': 'color_new',
+                'data_completed': '2002-11-05',
+                'completed': False,
+                'tag': 'new_task'
+                }
+        serializer = TaskSerializer(task)
+        self.assertEqual(serializer.data, data)

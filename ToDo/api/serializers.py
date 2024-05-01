@@ -23,10 +23,10 @@ class UserResetPasswordSerializer(Serializer):
 
 class TaskSerializer(ModelSerializer):
     # data_completed = serializers.DateTimeField(format = '%Y-%m-%d')
-    data_create = serializers.DateTimeField(format = '%Y-%m-%d', required=False)
+    # data_create = serializers.DateTimeField(format = '%Y-%m-%d', required=False)
     class Meta: 
         model = Task
-        fields = ['id', 'user', 'title', 'description', 'data_create', 'color_code', 'data_completed', 'completed', 'tag']
+        fields = ['id', 'user', 'title', 'description', 'color_code', 'data_completed', 'completed', 'tag']
         read_only_fields = ['id', 'data_create', 'user']
 
     def update(self, instance, validated_data):

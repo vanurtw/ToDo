@@ -67,6 +67,10 @@ class TaskAPIView(GenericAPIView):
             data = request.user.user_tasks.filter(data_completed=date)
         else:
             data = request.user.user_tasks.all()
+
+        tag = request.GET.get('tag')
+        if tag:
+            data = data.filter(tag=tag)
         serializer = TaskSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

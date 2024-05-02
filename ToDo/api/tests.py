@@ -148,98 +148,139 @@ from rest_framework.test import APIClient
 #         self.assertEqual(tokens.count(), 0)
 
 
-class TaskTest(TestCase):
+# class TaskTest(TestCase):
+#     def setUp(self) -> None:
+#         user_model = get_user_model()
+#         user = user_model.objects.create_user(username='user', email='user@user.ru', password='awdawdwadwarb')
+#         token = Token.objects.create(user=user)
+#         self.user = user
+#         self.token = token
+#         task = Task.objects.create(title='test',
+#                                    description='test',
+#                                    color_code='test',
+#                                    data_completed='1990-03-27',
+#                                    tag='test',
+#                                    user=self.user)
+#         self.client = APIClient()
+#         self.client.force_authenticate(self.user)
+#
+#
+# def test_tasks_get(self):
+#     url = reverse('tasks')
+#     response = self.client.get(url)
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertEqual(len(response.data), 1)
+#     url = reverse('tasks') + '?date=1990/03/27'
+#     response = self.client.get(url)
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertEqual(len(response.data), 1)
+#     url = reverse('tasks') + '?date=2000/06/21'
+#     response = self.client.get(url)
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertEqual(len(response.data), 0)
+#     url = reverse('tasks') + '?tag=test'
+#     response = self.client.get(url)
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertEqual(len(response.data), 1)
+#     url = reverse('tasks') + '?tag=test_test'
+#     response = self.client.get(url)
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertEqual(len(response.data), 0)
+#
+#
+# def test_tasks_post(self):
+#     url = reverse('tasks')
+#     data = {
+#         'title': 'new_task',
+#         'description': 'new_task',
+#         'color_code': 'color_new',
+#         'tag': 'new_task',
+#         'data_completed': '2002-11-05'
+#     }
+#     response = self.client.post(url, data=data)
+#     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#     tasks = Task.objects.filter(title='new_task',
+#                                 description='new_task',
+#                                 color_code='color_new',
+#                                 tag='new_task').exists()
+#     self.assertTrue(tasks)
+#
+#
+# def test_tasks_serializer(self):
+#     task = Task.objects.create(user=self.user,
+#                                title='new_task',
+#                                description='new_task',
+#                                color_code='color_new',
+#                                tag='new_task',
+#                                data_completed='2002-11-05'
+#                                )
+#     data = {'id': task.id,
+#             'user': self.user.id,
+#             'title': 'new_task',
+#             'description': 'new_task',
+#             'color_code': 'color_new',
+#             'data_completed': '2002-11-05',
+#             'completed': False,
+#             'tag': 'new_task'
+#             }
+#     serializer = TaskSerializer(task)
+#     self.assertEqual(serializer.data, data)
+#
+#
+# def test_tasks_error(self):
+#     self.client.logout()
+#     self.token.delete()
+#     url = reverse('tasks')
+#     response = self.client.get(url)
+#     self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+#     data = {
+#         'title': 'new_task',
+#         'description': 'new_task',
+#         'color_code': 'color_news',
+#         'data_completed': '2002-11-05',
+#         'tag': 'new_task'
+#     }
+#     response = self.client.post(url, data=data)
+#     self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+#     task = Task.objects.filter(title='new_task',
+#                                description='new_task',
+#                                color_code='color_news',
+#                                tag='new_task').exists()
+#     self.assertFalse(task)
+
+
+class TaskDetail(TestCase):
     def setUp(self) -> None:
-        user_model = get_user_model()
-        user = user_model.objects.create_user(username='user', email='user@user.ru', password='awdawdwadwarb')
-        token = Token.objects.create(user=user)
+        self.client = APIClient()
+        user = get_user_model().objects.create_user(username='test',
+                                                    password='test',
+                                                    email='test@test.ru')
         self.user = user
+        token = Token.objects.create(user=user)
         self.token = token
-        task = Task.objects.create(title='test',
+        self.client.force_authenticate(self.user)
+        task = Task.objects.create(user=self.user,
+                                   title='test',
                                    description='test',
                                    color_code='test',
-                                   data_completed='1990-03-27',
-                                   tag='test',
-                                   user=self.user)
-        self.client = APIClient()
-        self.client.force_authenticate(self.user)
+                                   data_completed='1990-05-11',
+                                   tag='test')
+        self.task = task
 
-    # def test_tasks_get(self):
-    #     url = reverse('tasks')
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(len(response.data), 1)
-    #     url = reverse('tasks')+'?date=1990/03/27'
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(len(response.data), 1)
-    #     url = reverse('tasks') + '?date=2000/06/21'
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(len(response.data), 0)
-    #     url = reverse('tasks') + '?tag=test'
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(len(response.data), 1)
-    #     url = reverse('tasks') + '?tag=test_test'
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(len(response.data), 0)
-    #
-    # def test_tasks_post(self):
-    #     url = reverse('tasks')
-    #     data = {
-    #         'title': 'new_task',
-    #         'description': 'new_task',
-    #         'color_code': 'color_new',
-    #         'tag': 'new_task',
-    #         'data_completed': '2002-11-05'
-    #     }
-    #     response = self.client.post(url, data=data)
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    #     tasks = Task.objects.filter(title='new_task',
-    #                                 description='new_task',
-    #                                 color_code='color_new',
-    #                                 tag='new_task').exists()
-    #     self.assertTrue(tasks)
-    #
-    # def test_tasks_serializer(self):
-    #     task = Task.objects.create(user=self.user,
-    #                                title='new_task',
-    #                                description='new_task',
-    #                                color_code='color_new',
-    #                                tag='new_task',
-    #                                data_completed='2002-11-05'
-    #                                )
-    #     data = {'id': task.id,
-    #             'user': self.user.id,
-    #             'title': 'new_task',
-    #             'description': 'new_task',
-    #             'color_code': 'color_new',
-    #             'data_completed': '2002-11-05',
-    #             'completed': False,
-    #             'tag': 'new_task'
-    #             }
-    #     serializer = TaskSerializer(task)
-    #     self.assertEqual(serializer.data, data)
-
-    def test_tasks_error(self):
-        self.client.logout()
-        self.token.delete()
-        url = reverse('tasks')
+    def test_task_detail_get(self):
+        url = reverse('task_detail', kwargs={'id': 1})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        data = {
-            'title': 'new_task',
-            'description': 'new_task',
-            'color_code': 'color_news',
-            'data_completed': '2002-11-05',
-            'tag': 'new_task'
-        }
-        response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        task = Task.objects.filter(title='new_task',
-                                   description='new_task',
-                                   color_code='color_news',
-                                   tag='new_task').exists()
-        self.assertFalse(task)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_task_detail_path(self):
+        url = reverse('task_detail', kwargs={'id': 1})
+        data = {'title': 'new_task', 'tag': 'new_task', 'completed': True}
+        self.assertNotEqual(self.task.title, data['title'])
+        self.assertNotEqual(self.task.tag, data['tag'])
+        self.assertNotEqual(self.task.completed, data['completed'])
+        response = self.client.patch(url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        task = Task.objects.get(id=1)
+        self.assertEqual(task.title, data['title'])
+        self.assertEqual(task.tag, data['tag'])
+        self.assertEqual(task.completed, data['completed'])

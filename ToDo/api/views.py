@@ -103,7 +103,6 @@ class TaskDetailAPIView(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
-        print('awdwadwawadwdaawdwdawadwda')
         task = get_object_or_404(Task, id=id)
         if task.user != request.user:
             return Response({'detail': 'Это не ваша задача'}, status=status.HTTP_403_FORBIDDEN)

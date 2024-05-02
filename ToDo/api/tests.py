@@ -284,3 +284,13 @@ class TaskDetail(TestCase):
         self.assertEqual(task.title, data['title'])
         self.assertEqual(task.tag, data['tag'])
         self.assertEqual(task.completed, data['completed'])
+
+    def test_task_detail_delete(self):
+        id = 1
+        task = Task.objects.filter(id=id)
+        self.assertTrue(task.exists())
+        url = reverse('task_detail', kwargs={'id': id})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        task = Task.objects.filter(id=id)
+        self.assertFalse(task.exists())

@@ -68,9 +68,9 @@ class TaskAPIView(GenericAPIView):
         else:
             data = request.user.user_tasks.all()
 
-        tag = request.GET.get('tag')
+        tag = request.GET.getlist('tag')
         if tag:
-            data = data.filter(tag=tag)
+            data = data.filter(tag__in=tag)
         serializer = TaskSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

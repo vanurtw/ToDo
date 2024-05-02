@@ -30,7 +30,13 @@ class TaskSerializer(ModelSerializer):
         read_only_fields = ['id', 'data_create', 'user']
 
     def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+        instance.__dict__.update(validated_data)
+        instance.save()
+        return instance
+    
+    def save(self, **kwargs):
+        return super().save(**kwargs)
+
 
 
 class UserSerializer(ModelSerializer):

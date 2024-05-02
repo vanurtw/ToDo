@@ -89,13 +89,15 @@ class TaskDetailAPIView(GenericAPIView):
     def get(self, request, id):
         task = Task.objects.get(id=id)
         if task.user != request.user:
-            return Response({'detail': 'Это не твоя задача'})
+            return Response({'detail': 'Это не твоя задача'}, status=status.HTTP_403_FORBIDDEN)
         serializer = TaskSerializer(task)
         return Response(serializer.data)
 
     def patch(self, request, id):
         data = request.data
         task = get_object_or_404(Task, id=id)
+        if task.user != request.user:
+            return Response({'detail': 'Это не ваша задача'}, status=status.HTTP_403_FORBIDDEN)
         serializer = TaskSerializer(data=data, instance=task, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -111,6 +113,8 @@ class TaskDetailAPIView(GenericAPIView):
 
 
 class UserRegisterAPIView(GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request):
         data = request.data
         serializer = UserSerializer(data=data)

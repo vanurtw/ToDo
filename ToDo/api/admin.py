@@ -11,4 +11,4 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'title']

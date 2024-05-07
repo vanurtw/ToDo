@@ -1,11 +1,13 @@
+from django.db.models import F
 from rest_framework.generics import GenericAPIView, get_object_or_404
-from .serializers import UserSerializer, UserResetPasswordSerializer, TaskSerializer
+from .serializers import UserSerializer, UserResetPasswordSerializer, TaskSerializer, TaskTagSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from datetime import datetime
 from .models import Task
 from rest_framework.authtoken.models import Token
+from rest_framework import views
 
 
 # Create your views here
@@ -122,3 +124,16 @@ class UserRegisterAPIView(GenericAPIView):
             print(2)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TaskTagAPIView(GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        queryset = Task.objects.filter(user=request.user).distinct('tag')
+
+
+        serializer = TaskTagSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+

@@ -24,7 +24,7 @@ class UserResetPasswordSerializer(Serializer):
 class TaskSerializer(ModelSerializer):
     # data_completed = serializers.DateTimeField(format = '%Y-%m-%d')
     # data_create = serializers.DateTimeField(format = '%Y-%m-%d', required=False)
-    class Meta: 
+    class Meta:
         model = Task
         fields = ['id', 'user', 'title', 'description', 'color_code', 'data_completed', 'completed', 'tag']
         read_only_fields = ['id', 'data_create', 'user']
@@ -33,10 +33,9 @@ class TaskSerializer(ModelSerializer):
         instance.__dict__.update(validated_data)
         instance.save()
         return instance
-    
+
     def save(self, **kwargs):
         return super().save(**kwargs)
-
 
 
 class UserSerializer(ModelSerializer):
@@ -56,3 +55,9 @@ class UserSerializer(ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class TaskTagSerializer(serializers.Serializer):
+    def to_representation(self, instance):
+        queryset = Task.objects.filter(tag=instance.tag)
+        return {instance.tag: TaskSerializer(queryset, many=True).data}

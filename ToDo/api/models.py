@@ -21,6 +21,12 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f'{self.email}'
 
+class Tag(models.Model):
+    tag = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.tag
+
 
 class Task(models.Model):
     user = models.ForeignKey(get_user_model(),

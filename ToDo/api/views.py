@@ -131,9 +131,5 @@ class TaskTagAPIView(GenericAPIView):
 
     def get(self, request):
         queryset = Task.objects.filter(user=request.user).distinct('tag')
-
-
         serializer = TaskTagSerializer(queryset, many=True)
         return Response(serializer.data)
-
-

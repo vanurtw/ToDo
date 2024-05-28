@@ -132,12 +132,12 @@ class TaskTagAPIView(GenericAPIView):
     def get(self, request):
         queryset = Task.objects.filter(user=request.user).distinct('tag')
         date_get = request.GET.get('date')
+
         if date_get:
             try:
                 date = datetime.strptime(date_get, '%Y/%m/%d')
             except:
                 return Response({'detail': 'Неверная дата'}, status=status.HTTP_400_BAD_REQUEST)
-
-            queryset = request.user.user_tasks.filter(data_completed=date)
+            queryset = queryset.filter(data_completed=date)
         serializer = TaskTagSerializer(queryset, many=True)
         return Response(serializer.data)

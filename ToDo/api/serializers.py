@@ -3,6 +3,7 @@ from rest_framework.serializers import ModelSerializer, Serializer
 from .models import CustomUser, Task
 from rest_framework.validators import ValidationError
 from rest_framework import serializers
+from datetime import datetime
 
 
 class UserResetPasswordSerializer(Serializer):
@@ -59,5 +60,14 @@ class UserSerializer(ModelSerializer):
 
 class TaskTagSerializer(serializers.Serializer):
     def to_representation(self, instance):
+        date_get = self.context.get('date')
         queryset = Task.objects.filter(tag=instance.tag)
+        if date_get:
+            try:
+                date = datetime.strptime(date_get, '%Y/%m/%d')
+                queryset = queryset.filter(data_completed=date)
+            except:
+                s = 5
+                # return Response({'detail': 'Неверная дата'}, status=status.HTTP_400_BAD_REQUEST)
+
         return {instance.tag: TaskSerializer(queryset, many=True).data}

@@ -61,7 +61,8 @@ class UserSerializer(ModelSerializer):
 class TaskTagSerializer(serializers.Serializer):
     def to_representation(self, instance):
         date_get = self.context.get('date')
-        queryset = Task.objects.filter(tag=instance.tag)
+        user = self.context.get('user')
+        queryset = Task.objects.filter(tag=instance.tag, user=user)
         if date_get:
             try:
                 date = datetime.strptime(date_get, '%Y/%m/%d')

@@ -140,5 +140,5 @@ class TaskTagAPIView(GenericAPIView):
                 return Response({'detail': 'Неверная дата'}, status=status.HTTP_400_BAD_REQUEST)
             queryset = queryset.filter(data_completed=date)
         print(queryset)
-        serializer = TaskTagSerializer(queryset, many=True, context={'date':date_get})
+        serializer = TaskTagSerializer(queryset, many=True, context={'date':date_get, 'user':request.user})
         return Response(serializer.data)

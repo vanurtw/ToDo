@@ -67,7 +67,7 @@ class TaskTagSerializer(serializers.Serializer):
                 date = datetime.strptime(date_get, '%Y/%m/%d')
                 queryset = queryset.filter(data_completed=date)
             except:
-                s = 5
+                pass
                 # return Response({'detail': 'Неверная дата'}, status=status.HTTP_400_BAD_REQUEST)
 
         return {instance.tag: TaskSerializer(queryset, many=True).data}
